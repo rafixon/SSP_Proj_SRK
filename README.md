@@ -8,7 +8,7 @@ Jakub Kostecki
 Szymon Krzyworzeka
 
 1.Topologia:
-
+/---
           / --- h2
          |
  h1 --- s1  --- h3
