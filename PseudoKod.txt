@@ -1,0 +1,72 @@
+ # MAIN
+ PROCEDURE HandlePacket(packet)
+ #Sprawdzenie, czy przepływ istnieje w tablicy przepływów
+    FOR każdy flow_entry w flow_table DO
+        IF flow_entry odpowiada packet THEN
+            ForwardPacket(packet, flow_entry)
+            RETURN
+        END IF
+    END FOR
+
+#Rozwiązywanie ARP, jeśli potrzebne
+   IF packet.dst_ip NIE w arp_table THEN
+       SendARPRequest(packet.dst_ip)
+       RETURN  ▷ Oczekujemy na odpowiedź ARP
+   END IF
+
+#Wybór servera z najmniejszym obciążeniem
+   dst_mac ← arp_table[packet.dst_ip]
+   selected_host ← SelectHostUsingWLC()
+   dst_ip ← selected_host.ip
+
+#Podmiana adresów w pakiecie na broadcast MAC
+   packet.dst_mac ← "FF:FF:FF:FF:FF:FF" 
+   packet.dst_ip ← dst_ip
+
+#Dodanie przepływu do tablicy przepływów
+   AddFlowToTable(packet.src_ip, dst_ip, packet.src_mac, dst_mac)
+   AddReverseFlow(packet.dst_ip, packet.src_ip, dst_mac, packet.src_mac)
+
+# Przekazanie pakietu natychmiast za pomocą PacketOut
+   SendPacketOut(packet)
+
+#Aktualizacja statystyk obciążenia hostów
+   IncrementHostConnections(selected_host)¥
+END PROCEDURE
+
+
+# Algorytm WLC
+PROCEDURE SelectHostUsingWLC()
+    min_load ← nieskończoność
+    selected_host ← NULL
+    FOR każdy host w host_list DO
+        effective_load ← host.active_connections / host.weight
+        IF effective_load < min_load THEN
+            min_load ← effective_load
+            selected_host ← host
+        END IF
+   END FOR
+   RETURN selected_host
+END PROCEDURE
+
+
+# FlowMod
+PROCEDURE AddFlowToTable(src_ip, dst_ip, src_mac, dst_mac)
+    flow_id ← GenerateFlowID(src_ip, dst_ip)
+    flow_table[flow_id] ← {src_ip, dst_ip, src_mac, dst_mac, timeout}
+END PROCEDURE
+
+
+# Reverse FlowMod
+PROCEDURE AddReverseFlow(dst_ip, src_ip, dst_mac, src_mac)
+    reverse_flow_id ← GenerateFlowID(dst_ip, src_ip)
+    flow_table[reverse_flow_id] ← {dst_ip, src_ip, dst_mac, src_mac, timeout}
+END PROCEDURE
+     
+     
+# PacketOut     
+PROCEDURE SendPacketOut(packet)
+#Utwórz wiadomość PacketOut
+    message ← CreatePacketOutMessage(packet)
+    Send message to Host
+END PROCEDURE
