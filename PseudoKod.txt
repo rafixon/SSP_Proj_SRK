@@ -1,4 +1,10 @@
- # MAIN
+#Rozwiązywanie ARP, jeśli potrzebne
+   JEŚLI packet.dst_ip NIE_ISTNIEJE w arp_table ZRÓB
+       SendARPRequest(FF:FF:FF:FF:FF:FF)
+       RETURN  ▷ Oczekujemy na odpowiedź ARP
+   END IF
+
+# MAIN
  PROCEDURE HandlePacket(packet)
  #Sprawdzenie, czy przepływ istnieje w tablicy przepływów
     FOR każdy flow_entry w flow_table DO
@@ -8,58 +14,50 @@
         END IF
     END FOR
 
-#Rozwiązywanie ARP, jeśli potrzebne
-   IF packet.dst_ip NIE w arp_table THEN
-       SendARPRequest(packet.dst_ip)
-       RETURN  ▷ Oczekujemy na odpowiedź ARP
-   END IF
-
 #Wybór servera z najmniejszym obciążeniem
-   dst_mac ← arp_table[packet.dst_ip]
    selected_host ← SelectHostUsingWLC()
    dst_ip ← selected_host.ip
-
-#Podmiana adresów w pakiecie na broadcast MAC
-   packet.dst_mac ← "FF:FF:FF:FF:FF:FF" 
-   packet.dst_ip ← dst_ip
+   dst_mac ← arp_table[packet.dst_ip]
 
 #Dodanie przepływu do tablicy przepływów
-   AddFlowToTable(packet.src_ip, dst_ip, packet.src_mac, dst_mac)
-   AddReverseFlow(packet.dst_ip, packet.src_ip, dst_mac, packet.src_mac)
+   AddFlowToTable(src_ip, dst_ip, src_mac, dst_mac)
+   AddReverseFlow(src_ip, dst_ip, src_mac, dst_mac)
 
 # Przekazanie pakietu natychmiast za pomocą PacketOut
-   SendPacketOut(packet)
+   SendPacketOut(dst_ip, dst_mac)
 
 #Aktualizacja statystyk obciążenia hostów
-   IncrementHostConnections(selected_host)¥
+   host.active_connections + 1
 END PROCEDURE
 
 
 # Algorytm WLC
 PROCEDURE SelectHostUsingWLC()
-    min_load ← nieskończoność
-    selected_host ← NULL
-    FOR każdy host w host_list DO
-        effective_load ← host.active_connections / host.weight
-        IF effective_load < min_load THEN
-            min_load ← effective_load
-            selected_host ← host
-        END IF
-   END FOR
-   RETURN selected_host
+
+  Lista Waga<1,2,3>
+  Lista Liczba_Połączeń<c0,c1,c2>
+  Lista Serwery<s1,s2,s3>
+
+  for i in range(Serwery.size):
+      pom = Liczba_Połączeń[i]/Waga[i]
+      if(pom < wartość):
+           wartość = min
+           Serwer = Serwery[i]
+  Return(serwer) 
+
 END PROCEDURE
 
 
 # FlowMod
 PROCEDURE AddFlowToTable(src_ip, dst_ip, src_mac, dst_mac)
-    flow_id ← GenerateFlowID(src_ip, dst_ip)
+    flow_id ← GenerateFlowID()
     flow_table[flow_id] ← {src_ip, dst_ip, src_mac, dst_mac, timeout}
 END PROCEDURE
 
 
 # Reverse FlowMod
 PROCEDURE AddReverseFlow(dst_ip, src_ip, dst_mac, src_mac)
-    reverse_flow_id ← GenerateFlowID(dst_ip, src_ip)
+    reverse_flow_id ← GenerateFlowID()
     flow_table[reverse_flow_id] ← {dst_ip, src_ip, dst_mac, src_mac, timeout}
 END PROCEDURE
      
