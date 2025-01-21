@@ -10,7 +10,7 @@ Szymon Krzyworzeka
 ### 1. Uruchomienie środowiska:
 *https://www.youtube.com/watch?v=c7l6TR1Ptic*
   * Wymagania sprzętowe
-    1. OS; Ubuntu 24.04 lub nowszy
+    1. OS; Ubuntu 24.04
     2. Python 3.12
     3. Mininet 2.3
 
@@ -43,7 +43,7 @@ Pliki generator_server.py oraz generator_client.py
 
 Dwie aplikacje klienta oraz serwera
 Serwer nasłuchujacy na podanym przez użytkownika porcie
-Klient generujacy zapytania na porcie http 80 do wirtualnego serwera 10.0.1.1
+Klient generujacy zapytania na porcie http 80 do serwera pod virtuanym adresem 10.0.1.1
 
 aby włączyć serwer proszę użyć: sudo python3 generator_server.py <nazwa_serwera> <port_nasluchujacy>
 aby włączyć klineta proszę użyć: sudo python3 generator_client.py
@@ -51,29 +51,38 @@ aby włączyć klineta proszę użyć: sudo python3 generator_client.py
 ### 4. Loadbalancer:
 Plik wlc_lb.py
 Implementacja Load Balancera wykorzystujacego algorytm Least Weighted Connections.
-Aplikacja oparta na programie James`a McCauley
 
-Implementacja algorytmu:
-XXXXX
+Dodano nowe słowniki:
+self.server_connections - licznik aktywnych połączeń do serwerów.
+self.server_weights - wagi przypisane do serwerów
+
+Zmieniono sposób wyboru serwera w _pick_server(), zamiast losowego wyboru, teraz serwer wybierany jest na podstawie ilorazu liczby aktywnych połączeń do wagi serwera:
+return min(self.server_connections, key=lambda s: self.server_connections[s] / self.server_weights[s])
+
+Po wybraniu serwera w _handle_PacketIn(), zwiększana jest liczba jego aktywnych połączeń:
+self.server_connections[server] += 1
 
 Ponadto program obsługuje mechanizm ARP, dodawanie wpisów do tablicy przepływów FlowMod, oraz wysyłanie pakietów ze sterownika PacketOut
 
 ### 5. Uruchomienie projektu:
 
 1. Po zainstalowaniu środowiska z punktu 1 proszę pobrać poniższe pliki oraz zamieścić je w odpowiednich miejscach:
-  * wlc_lb.py - /pox
-  * single_switch_topo.py - folder /mininet
-  * generator_server.py - dowolnie
-  * generator_client.py - dowolnie
-   
-2. Proszę przejść do katalogu /mininet i otworzyć topologie w mininecie za pomocą:
-   sudo mn --custom single_switch_topo.py --topo singleswitch --controllers=remote, ip=127.0.0.1:6633
+ * wlc_lb.py - /pox/pox/misc
+ * single_switch_topo.py - folder /mininet
+ * generator_server.py - dowolnie
+ * generator_client.py - dowolnie
 
-3. Proszę przejść do katalogu /pox i otworzyć sterownik kontrolera pox za pomocą:
-   python3 pox.py wlc_lb.py --ip=10.0.1.1 --servers=10.0.0.2,10.0.0.3,10.0.0.4
+2 Proszę przejść do katalogu /pox i otworzyć sterownik kontrolera pox za pomocą:
+   root@ubuntu:~/pox$ python3 pox.py misc.wlc_lb --ip=10.0.1.1 --servers=10.0.0.2,10.0.0.3,10.0.0.4
+   
+3. Proszę przejść do katalogu /mininet i otworzyć topologie w mininecie za pomocą:
+   root@ubuntu:~/mininet$ sudo mn --custom single_switch_topo.py --topo singleswitch --controllers=remote, ip=127.0.0.1:6633
    
 4. Proszę otworzyć terminale urządzeń za pomocą xterm w konsoli mininet:
-   xterm h1, xterm h2,...
+   miminet > xterm h1
+   mininet > xterm h2
+   miminet > xterm h3
+   mininet > xterm h4
    
 5. Na klientach od 2 do 4 proszę włączyć nasłuchujące serwery:
    h2: sudo python3 generator_server.py h2 80
