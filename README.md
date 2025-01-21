@@ -60,28 +60,28 @@ Ponadto program obsługuje mechanizm ARP, dodawanie wpisów do tablicy przepływ
 
 ### 5. Uruchomienie projektu:
 
-1. Po zainstalowaniu środowiska z punktu 1 proszę pobrać poniższe pliki oraz zamieścić je w odpowiednich miejscach:
- * wlc_lb.py - /pox
- * single_switch_topo.py - folder /mininet
- * generator_server.py - dowolnie
- * generator_client.py - dowolnie
+ 1. Po zainstalowaniu środowiska z punktu 1 proszę pobrać poniższe pliki oraz zamieścić je w odpowiednich miejscach:
+  * wlc_lb.py - /pox
+  * single_switch_topo.py - folder /mininet
+  * generator_server.py - dowolnie
+  * generator_client.py - dowolnie
    
-2. Proszę przejść do katalogu /mininet i otworzyć topologie w mininecie za pomocą:
-   sudo mn --custom single_switch_topo.py --topo singleswitch --controllers=remote, ip=127.0.0.1:6633
+ 2. Proszę przejść do katalogu /mininet i otworzyć topologie w mininecie za pomocą:
+    sudo mn --custom single_switch_topo.py --topo singleswitch --controllers=remote, ip=127.0.0.1:6633
 
-3. Proszę przejść do katalogu /pox i otworzyć sterownik kontrolera pox za pomocą:
-   python3 pox.py wlc_lb.py --ip=10.0.1.1 --servers=10.0.0.2,10.0.0.3,10.0.0.4
+ 3. Proszę przejść do katalogu /pox i otworzyć sterownik kontrolera pox za pomocą:
+    python3 pox.py wlc_lb.py --ip=10.0.1.1 --servers=10.0.0.2,10.0.0.3,10.0.0.4
    
-4. Proszę otworzyć terminale urządzeń za pomocą xterm w konsoli mininet:
-   xterm h1, xterm h2,...
+ 4. Proszę otworzyć terminale urządzeń za pomocą xterm w konsoli mininet:
+    xterm h1, xterm h2,...
    
-5. Na klientach od 2 do 4 proszę włączyć nasłuchujące serwery:
-   h2: sudo python3 generator_server.py h2 80
-   h3: sudo python3 generator_server.py h3 80
-   h4: sudo python3 generator_server.py h4 80
+ 5. Na klientach od 2 do 4 proszę włączyć nasłuchujące serwery:
+    h2: sudo python3 generator_server.py h2 80
+    h3: sudo python3 generator_server.py h3 80
+    h4: sudo python3 generator_server.py h4 80
 
-6. Na kliencie 1 proszę włączyć generator ruchu:
-   h1: sudo python3 generator_client.py
+ 6. Na kliencie 1 proszę włączyć generator ruchu:
+    h1: sudo python3 generator_client.py
 
-7. Prosze obserwować dystrybucję pakietów
-   stosunek między serwerami wynosi 1:2:4
+ 7. Prosze obserwować dystrybucję pakietów
+    stosunek między serwerami wynosi 1:2:4
