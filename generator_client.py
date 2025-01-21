@@ -2,7 +2,7 @@ import requests
 import random
 import time
 
-vip = "10.0.0.2"  # Virtual IP for the load balancer
+vip = "10.0.1.1"  # Virtual IP for the load balancer
 port = 80
 
 while True:
