@@ -73,7 +73,7 @@ Ponadto program obsługuje mechanizm ARP, dodawanie wpisów do tablicy przepływ
  * generator_client.py - dowolnie
 
 2. Proszę przejść do katalogu /pox i otworzyć sterownik kontrolera pox za pomocą:
-root@ubuntu:~/pox$ python3 pox.py misc.wlc_lb --ip=10.0.1.1 --servers=10.0.0.2,10.0.0.3,10.0.0.4
+root@ubuntu:~/pox$ python3 pox.py wlc_lb --ip=10.0.1.1 --servers=10.0.0.2,10.0.0.3,10.0.0.4
    
 3. Proszę przejść do katalogu /mininet i otworzyć topologie w mininecie za pomocą:
    root@ubuntu:~/mininet$ sudo mn --custom single_switch_topo.py --topo singleswitch --controllers=remote, ip=127.0.0.1:6633
