@@ -108,7 +108,7 @@ class iplb (object):
     self.mac = self.con.eth_addr
     self.live_servers = {} # IP -> MAC,port
     self.server_connections = {server: 0 for server in self.servers}
-    self.server_weights = {server: weight for server, weight in zip(self.servers, [1, 5, 10])} # Wagi serwerów
+    self.server_weights = {server: weight for server, weight in zip(self.servers, [1, 2, 4])} # Wagi serwerów
 
     try:
       self.log = log.getChild(dpid_to_str(self.con.dpid))
