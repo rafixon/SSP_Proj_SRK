@@ -75,8 +75,8 @@ Ponadto program obsługuje mechanizm ARP, dodawanie wpisów do tablicy przepływ
 2. Proszę przejść do katalogu /pox i otworzyć sterownik kontrolera pox za pomocą:
    root@ubuntu:~/pox$ python3 pox.py wlc_lb --ip=10.0.1.1 --servers=10.0.0.2,10.0.0.3,10.0.0.4
    
-4. Proszę przejść do katalogu /mininet i otworzyć topologie w mininecie za pomocą:
-   root@ubuntu:~/mininet$ sudo mn --custom single_switch_topo.py --topo singleswitch --controller=remote, ip=127.0.0.1:6633
+4. Proszę przejść do katalogu /mininet i otworzyć topologie w mininecie za pomocą:;
+   root@ubuntu:~/mininet$ sudo mn --custom single_switch_topo.py --topo singleswitch --controller=remote,ip=127.0.0.1:6633
    
 5. Proszę otworzyć terminale urządzeń za pomocą xterm w konsoli mininet:
 
