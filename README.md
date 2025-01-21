@@ -75,23 +75,26 @@ Ponadto program obsługuje mechanizm ARP, dodawanie wpisów do tablicy przepływ
 2. Proszę przejść do katalogu /pox i otworzyć sterownik kontrolera pox za pomocą:
    root@ubuntu:~/pox$ python3 pox.py wlc_lb --ip=10.0.1.1 --servers=10.0.0.2,10.0.0.3,10.0.0.4
    
-4. Proszę przejść do katalogu /mininet i otworzyć topologie w mininecie za pomocą:;
+4. Proszę przejść do katalogu /mininet i otworzyć topologie w mininecie za pomocą:
    root@ubuntu:~/mininet$ sudo mn --custom single_switch_topo.py --topo singleswitch --controller=remote,ip=127.0.0.1:6633
    
 5. Proszę otworzyć terminale urządzeń za pomocą xterm w konsoli mininet:
 
    mininet > xterm h1
+   
    mininet > xterm h2
+   
    mininet > xterm h3
+   
    mininet > xterm h4
    
-6. Na klientach od 2 do 4 proszę włączyć nasłuchujące serwery:
+7. Na klientach od 2 do 4 proszę włączyć nasłuchujące serwery:
    h2: sudo python3 generator_server.py h2 80
    h3: sudo python3 generator_server.py h3 80
    h4: sudo python3 generator_server.py h4 80
 
-7. Na kliencie 1 proszę włączyć generator ruchu:
+8. Na kliencie 1 proszę włączyć generator ruchu:
    h1: sudo python3 generator_client.py
 
-8. Prosze obserwować dystrybucję pakietów
+9. Prosze obserwować dystrybucję pakietów
    stosunek między serwerami wynosi 1:2:4
